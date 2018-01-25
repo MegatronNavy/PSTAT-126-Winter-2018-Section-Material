@@ -1,0 +1,193 @@
+---
+title: "Intro to R for PSTAT 126 2018 Winter"
+author: "Xi Liu, Yi Zheng"
+date: "01/24/2018"
+output: 
+  html_document:
+    number_sections: yes
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+## knitr::opts_chunk$set(warning=FALSE, message=FALSE,fig.align='center',fig.height=3) 
+## For your homework solutions, you may want to hind warning and long messages, center the figures, and set the default height of figures.
+```
+
+*R is free, RStudio is free and R Markdown is free. *  
+*Give thanks to John Chambers (create S language), Hadley Wickham and Yihui Xie.*
+
+# Installing R and R studio
+
+## Download and install R
+* Go to <https://www.r-project.org/>
+* Click on Download [CRAN](https://cran.r-project.org/mirrors.html)
+* Choose the mirror closest to us in location: <http://cran.stat.ucla.edu/>
+* Select the operation system
+* Select the most recent version of R (R-3.4.1.pkg)
+* Follow the installer in steps to install R
+    
+## Download and install RStudio
+* Go to <http://www.rstudio.com> 
+* Click on [RStudio Download](https://www.rstudio.com/products/rstudio/download/)
+* Choose the first one, RStudio Desktop Open Source License, click on `DOWNLOAD`
+* Choose the Installers for Supported Platforms and download the RStudio
+* Follow the installer in steps to install R
+
+*[Mac installation video reference](https://www.youtube.com/watch?v=d-u_7vdag-0)*  
+*[Windows installation video reference](https://www.youtube.com/watch?v=9-RrkJQQYqY)*
+
+# Loading a package 
+The capabilities of R are extended through user-created `packages`.  If you want to use the specific functions or datasets in certain packages, install these packages first. Then every time you open R(RStudio), require the corresponding packages before you run the functions in them.
+```{r,eval=FALSE}
+############          install packages   # only one time             ############
+install.packages("knitr") # R Markdown package
+install.packages("alr4") # Contains course datasets used in homeworks
+install.packages("faraway") # Contains course datasets used in homeworks
+############                      require packages                   ############
+library(knitr)
+library(alr4)
+library(faraway)
+```
+# R basics---1 Objects and indexing
+
+## Objects in R
+* Variables. There are many different types of variables in R such as logical, numeric (integer, real, complex), string (or character) and raw.
+```{r}
+#using <- to assign values to variables
+
+#numerical variables
+x<-2
+y<-3
+x+y    #operation on variables
+z<-x+y #restore the operations results
+z
+#logical variables
+x==2
+x==3
+x!=3
+
+#string
+a<-"PSTAT 126"
+a
+```
+
+* Vectors-*atomic* structure, which means components are all of the same type, or mode, namely numeric, complex, logical, character and raw.
+```{r vectors}
+#numeric vector
+numeric.vector<-c(2018, 1, 25, 9, 126)
+one.to.five<-c(1,2,3,4,5)
+one.to.five
+1:5
+dup<-rep(2,times=5)
+dup
+
+#string vector
+character.vector<-c("try","to","be","a","qualified","data","scientist")
+character.vector
+
+#atomic property
+atomic<-c("Lab",1,"PSTAT",126)
+atomic
+
+#operation between vectors and variables
+one.to.five+1
+one.to.five/5
+
+one.to.five+1:5
+```
+
+* Array-*atomic* structure. As well as giving a vector structure a dim attribute, arrays can be constructed from vectors by the array function.  
+ Matrix is 2*2 array, which is the most useful one in this class.
+ 
+```{r}
+mat1<-matrix(1:9, ncol = 3, nrow = 3)
+mat1
+mat2<-matrix(1:9, ncol = 3, nrow = 3, byrow = T)
+mat2
+mat3<-rbind(numeric.vector,one.to.five)
+mat3
+mat4<-cbind(numeric.vector,one.to.five)
+mat4
+mat1%*%t(mat2)
+```
+
+* Lists-*recursive* structure. These are ordered sequences of objects which individually can be of any mode.  
+A special case of list is `data.frame`, which requires all columns should have the same length.
+```{r}
+list.example<-list(language=c("R","Matlab","Python","JAVA"),
+                   OpenOrNot=c(TRUE,FALSE,TRUE), # this colume only has three elements.
+                   RateByMe=c(9,7,10,8))
+data.frame.example<-data.frame(language=c("R","Matlab","Python","JAVA"),
+                               OpenOrNot=c("TRUE","FALSE","TRUE","Part"),
+                               RateByMe=c(9,7,10,8)) # length of all columns is 4.
+data.frame.example
+```
+
+* Functions are the objects that form part of the R system along with similar user written functions.
+```{r,fig.align='center',fig.height=4}
+mean(one.to.five)
+var(one.to.five)
+set.seed(20171004)
+plot(rnorm(100),ylab = "sample value",main="Normal Random Numbers",pch=16,col=3)
+```
+
+
+## Indexing
+```{r}
+############              accessing elements from vector              ############
+character.vector[2]
+# change character.vector[2] to "2"
+character.vector[2]<-"2" # when you put " " around the number, it is a character now.
+character.vector[c(2:5)] # the same with character.vector[c(2,3,4,5)]
+character.vector[c(2,5)]
+############             accessing variables from a data frame         ############
+data.frame.example[2,3] # element in second raw, third column
+data.frame.example[, 2] # get the second column
+data.frame.example$OpenOrNot # in data.frame, each column has a name, get the vector by name.
+```
+
+# R markdown basics
+
+More about R Markdown, please visit <http://rmarkdown.rstudio.com/lesson-1.html>.  
+Learn R Markdown in 10 mins, please read R Markdown Cheat Sheet.
+
+## R Markdown Workflow 
+
+1. Open a new .Rmd file.
+2. Write document (define the format, for example, make your homework contain a content).
+3. Knit document to create report (For your homework, choose PDF document and you will get a PDF file alongside .Rmd).
+
+## R Markdown syntax
+
+### Basic Markdown language
+
+| write the syntax|create effect|
+| :---------------|:-----------------|
+|`Plain text`| Plain text|
+|`*italics* and **bold** `|*italics* and **bold** |
+|`verbatim code` |`verbatim code` |
+|Equation `$S=\pi*r^2$`|$S=\pi*r^2$|
+|`# Header `| First header (like 4 R markdown basics) |
+|`## Header`| Second header (like 4.2 Markdown syntax)|
+|Link `<http://www.rstudio.com>` |<http://www.rstudio.com> |
+|unordered list| check source code in 1.1 Download and install R|
+|ordered list|check source code in 4.1 Workflow|
+
+### Code chunks options
+` ```{r ChunkName, cache=TURE, echo=TRUE, message=FALSE}`  
+` R code in chunks`  
+` ``` `
+
+
+| write the syntax|create effect|
+| :---------------|:-----------------|
+|cache |Cache results for future knits |
+|echo | Display code in output document|
+|eval | Run code in chunk (default = TRUE)|
+|message | Display code messages in document (default = TRUE)|
+|warning | Display code warnings in document (default = TRUE)|
+|fig.align | 'lef', 'right', or 'center' (default= 'default')|
+|fig.height, fig.width | Dimensions of plots in inches |
+
+
